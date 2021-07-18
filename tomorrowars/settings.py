@@ -41,13 +41,13 @@ INSTALLED_APPS = [
     # third-party apps
     'django.contrib.sites',
     'allauth',
-    'allauth.account',
+    'allauth.user_account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'rest_framework',
 
     # our apps
-    'account',
+    'user_account',
     'battle',
     'game',
     'shop'
