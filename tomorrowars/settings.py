@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # our apps
-    'account',
+    'user_account',
     'battle',
     'game',
     'shop'
