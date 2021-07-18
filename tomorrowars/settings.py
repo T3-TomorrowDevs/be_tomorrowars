@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     # third-party apps
     'django.contrib.sites',
     'allauth',
-    'allauth.user_account',
+    'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'rest_framework',
