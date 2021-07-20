@@ -16,6 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+
+from battle.views import BattleSearchAPIView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('battle-search/', BattleSearchAPIView.as_view(), name='battle-search'),
+
 ]
