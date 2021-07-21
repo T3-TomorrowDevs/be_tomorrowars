@@ -4,7 +4,7 @@ from rest_framework import status
 
 from game.models import GameAccount   # game model (level and credit)
 
-from battle.battle_utility.battle_search_output import BattleOutput
+from battle.battle_utility.battle_output import BattleOutput
 
 
 class BattleSearchAPIView(APIView):
