@@ -1,12 +1,10 @@
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
 from game.models import GameAccount   # game model (level and credit)
 
-from game.game_utility.battle_search_output import battle_search_output
+from battle.battle_utility.battle_search_output import BattleOutput
 
 
 class BattleSearchAPIView(APIView):
@@ -19,12 +17,13 @@ class BattleSearchAPIView(APIView):
     #permission_classes = [IsAuthenticated]
 
 
-    # to return the list of all user level
+    # return a list of ALL user and level
     def get(self, request, *args, **kwargs):
 
         id = GameAccount.objects.all().values_list('id')
         level = GameAccount.objects.all().values_list('level')
 
-        search_output = battle_search_output(id, level)
+        battle_out = BattleOutput()
+        search_output = battle_out.battle_search_output(id, level)
 
         return Response(search_output, status=status.HTTP_200_OK)
