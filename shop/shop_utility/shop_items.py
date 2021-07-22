@@ -84,3 +84,4 @@ shop_troops = {
         'tropp_def': 100}
 
 }
+
