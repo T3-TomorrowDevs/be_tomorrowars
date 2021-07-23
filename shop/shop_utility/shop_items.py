@@ -87,6 +87,7 @@ class ShopTroops:
     }
 
     # method to query the shop_troop dict
+    @staticmethod
     def get_troop_value(troop_id, troop_value):
 
         # get dict into variable
