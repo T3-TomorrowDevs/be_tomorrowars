@@ -27,6 +27,9 @@ class BattleAlgorithm:
         {'id': [1, 1, 2],
         'att': [50, 50, 60],
         'def': [70, 70, 40]}
+
+        errors like: id not present and value not present are managed in
+        shop/shop_utility/shop_items.py
         """
 
         troops_values = {'id': troops_id, 'att': [], 'def': []}
