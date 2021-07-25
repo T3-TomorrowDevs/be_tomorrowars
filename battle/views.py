@@ -49,13 +49,13 @@ class BattleSearchAPIView(APIView):
 
 
 
+
 class BattleFightAPIViews(APIView):
 
     # Specify what authentication to use
-    #authentication_classes = [TokenAuthentication]  # Requires token authentication
+    # authentication_classes = [TokenAuthentication]  # Requires token authentication
     # Will deny permission to any unauthenticated user, and allow permission otherwise
-    #permission_classes = [IsAuthenticated]
-
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
 
@@ -93,8 +93,29 @@ class BattleFightAPIViews(APIView):
                         battle_algo = BattleAlgorithm(enemy_troops, user_troops, enemy_multiplier, user_multiplier)
                         result = battle_algo.get_battle_result()
 
+                        # update the number of win/lose given the battle result
                         BattleFightAPIViews.update_win_lose(user_id, enemy_id, result)
 
+                        # check if the number of win is a multiple of 5,
+                        # if True update the level, else pass
+                        BattleFightAPIViews.update_level(user_id, enemy_id, result)
+
+                        # update winner level
+                        if result['win']:
+                            win = GameAccount.objects.get(user=user_id)
+                            win = win.win
+
+                            # if the number of win is a multiple of 5 return True, else False
+                            bool_ = BattleUtility.check_number_of_win(win)
+
+                            if bool_:
+                                # update the level
+                                level = GameAccount.objects.get(user=user_id)
+                                update_level = level.level + 1
+                                level.level = update_level
+                                level.save()
+                            else:
+                                pass
 
                         return Response(result, status=status.HTTP_200_OK)
 
@@ -118,27 +139,44 @@ class BattleFightAPIViews(APIView):
     def update_win_lose(user_id, enemy_id, result):
 
         if result['win']:
-            # if the user win, update the number of win
-            win = GameAccount.objects.get(user=user_id)
-            update_win = win.win + 1
-            win.win = update_win
-            win.save()
-
-            # update enemy lose number
-            lose = GameAccount.objects.get(user=enemy_id)
-            update_lose = lose.lose + 1
-            lose.lose = update_lose
-            lose.save()
-
+            winner = user_id
+            loser = enemy_id
         else:
-            # if user lose, update the enemy win number
-            win = GameAccount.objects.get(user=enemy_id)
-            update_win = win.win + 1
-            win.win = update_win
-            win.save()
+            winner = enemy_id
+            loser = user_id
 
-            # update enemy lose number
-            lose = GameAccount.objects.get(user=user_id)
-            update_lose = lose.lose + 1
-            lose.lose = update_lose
-            lose.save()
+        # update the winner’s number of wins
+        win = GameAccount.objects.get(user=winner)
+        update_win = win.win + 1
+        win.win = update_win
+        win.save()
+
+        # update the loser lose number
+        lose = GameAccount.objects.get(user=loser)
+        update_lose = lose.lose + 1
+        lose.lose = update_lose
+        lose.save()
+
+
+    @staticmethod
+    def update_level(user_id, enemy_id, result):
+
+        if result['win']:
+            winner = user_id
+        else:
+            winner = enemy_id
+
+        win = GameAccount.objects.get(user=winner)
+        win = win.win
+
+        # if the number of win is a multiple of 5 return True, else False
+        bool_ = BattleUtility.check_number_of_win(win)
+
+        if bool_:
+            # update the level
+            level = GameAccount.objects.get(user=user_id)
+            update_level = level.level + 1
+            level.level = update_level
+            level.save()
+        else:
+            pass
