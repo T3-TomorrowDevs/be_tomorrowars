@@ -19,3 +19,16 @@ class BattleUtility:
 
         return min_level_range, max_level_range
 
+
+    @staticmethod
+    def check_number_of_win(win):
+        # if the number of win is a multiple of 5,
+        # update the user level
+
+        if win % 5 == 0:
+            # the number is a multiple of 5
+            return True
+        else:
+            # the number is not a multiple of 5
+            return False
+
