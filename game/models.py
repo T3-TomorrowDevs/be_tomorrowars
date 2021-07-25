@@ -11,6 +11,9 @@ class GameAccount(models.Model):
     credit = models.IntegerField(default=10000)
     level = models.IntegerField(default=1, blank=True)
 
+    win = models.IntegerField(default=0)
+    lose = models.IntegerField(default=0)
+
     def __str__(self):
         return str(self.user)
 
