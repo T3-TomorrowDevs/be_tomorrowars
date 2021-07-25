@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path
 
 
-from battle.views import BattleSearchAPIView
+from battle.views import BattleSearchAPIView, BattleFightAPIViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('battle-search/', BattleSearchAPIView.as_view(), name='battle-search'),
+    path('battle-search/', BattleSearchAPIView.as_view(), name='battle-search'),  # search battle fight endpoint
+    path('battle-fight/', BattleFightAPIViews.as_view(), name='battle-fight'),    # battle fight endpoint
 
 ]
