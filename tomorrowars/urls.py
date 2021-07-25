@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-
+from game.views import PlanetArmyFormAPIView
 from battle.views import BattleSearchAPIView, BattleFightAPIViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path("game/planet-army/", PlanetArmyFormAPIView.as_view(), name='planet-army-name'),  # planet army form endpoint
 
     path('battle-search/', BattleSearchAPIView.as_view(), name='battle-search'),  # search battle fight endpoint
     path('battle-fight/', BattleFightAPIViews.as_view(), name='battle-fight'),    # battle fight endpoint
