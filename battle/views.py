@@ -48,12 +48,14 @@ class BattleSearchAPIView(APIView):
         return Response(search_output, status=status.HTTP_200_OK)
 
 
+
 class BattleFightAPIViews(APIView):
 
     # Specify what authentication to use
-    # authentication_classes = [TokenAuthentication]  # Requires token authentication
+    #authentication_classes = [TokenAuthentication]  # Requires token authentication
     # Will deny permission to any unauthenticated user, and allow permission otherwise
-    # permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
+
 
     def post(self, request, *args, **kwargs):
 
@@ -62,20 +64,20 @@ class BattleFightAPIViews(APIView):
 
         serializer = BattleFightSerializer(data=request.data)
 
-        # if the fields format are correct
+        # if the fields format is correct
         if serializer.is_valid():
             # get the enemy id by the request data, <QueryDict: {'id': ['2']}>
             enemy_id = request.data['enemy_id']
 
             # user that is logged in
-            user = request.user
-            user_id = user.id
+            user_id = request.user
+            user_id = user_id.id
 
             enemy_multiplier = request.data['enemy_multiplier']
             user_multiplier = request.data['user_multiplier']
 
             # check if the enemy id exist in db
-            if User.objects.filter(user=enemy_id).exists():
+            if User.objects.filter(id=enemy_id).exists():
 
                 # check if the enemy has troops
                 if UserTroop.objects.filter(user=enemy_id).values_list('troop_id').exists():
@@ -90,6 +92,9 @@ class BattleFightAPIViews(APIView):
                         # calculate who will win the battle given their troops and their multipliers
                         battle_algo = BattleAlgorithm(enemy_troops, user_troops, enemy_multiplier, user_multiplier)
                         result = battle_algo.get_battle_result()
+
+                        BattleFightAPIViews.update_win_lose(user_id, enemy_id, result)
+
 
                         return Response(result, status=status.HTTP_200_OK)
 
@@ -107,3 +112,33 @@ class BattleFightAPIViews(APIView):
 
         # if the format filed of the request data are not correct
         return Response("The field format is not correct, they must all be an integer", status.HTTP_400_BAD_REQUEST)
+
+
+    @staticmethod
+    def update_win_lose(user_id, enemy_id, result):
+
+        if result['win']:
+            # if the user win, update the number of win
+            win = GameAccount.objects.get(user=user_id)
+            update_win = win.win + 1
+            win.win = update_win
+            win.save()
+
+            # update enemy lose number
+            lose = GameAccount.objects.get(user=enemy_id)
+            update_lose = lose.lose + 1
+            lose.lose = update_lose
+            lose.save()
+
+        else:
+            # if user lose, update the enemy win number
+            win = GameAccount.objects.get(user=enemy_id)
+            update_win = win.win + 1
+            win.win = update_win
+            win.save()
+
+            # update enemy lose number
+            lose = GameAccount.objects.get(user=user_id)
+            update_lose = lose.lose + 1
+            lose.lose = update_lose
+            lose.save()
