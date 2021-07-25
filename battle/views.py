@@ -9,6 +9,7 @@ from game.models import GameAccount  # game model (level and credit)
 
 from battle.battle_utility.battle_output import BattleOutput
 from battle.battle_utility.battle_algorithm import BattleAlgorithm
+from battle.battle_utility.battle_utility import BattleUtility
 from battle.serializers import BattleFightSerializer
 
 
@@ -21,13 +22,28 @@ class BattleSearchAPIView(APIView):
     # Will deny permission to any unauthenticated user, and allow permission otherwise
     # permission_classes = [IsAuthenticated]
 
-    # return a list of ALL user and level
+    # return a list of id and level in a given range
     def get(self, request, *args, **kwargs):
-        id = GameAccount.objects.all().values_list('id')
-        level = GameAccount.objects.all().values_list('level')
+        # user that is logged in
+        user = request.user
+        user_id = user.id
 
+        # get the user level
+        user_level = GameAccount.objects.filter(user=user_id).values_list('level')
+        user_level = user_level[0][0]
+
+        # get the min and max level based on the user level (range -+5)
+        battle_utility = BattleUtility()
+        min_level_range, max_level_range = battle_utility.filter_battle_search(user_id)
+
+        # get a list of user-id and level in a given range
+        # <QuerySet [(1, 1), (3, 3), (4, 1), (5, 7)]>
+        id_level = GameAccount.objects.filter(level__gte=min_level_range, level__lte=max_level_range). \
+            values_list('user', 'level')
+
+        # perform the search fight output and exclude the id and level of the current user
         battle_out = BattleOutput()
-        search_output = battle_out.battle_search_output(id, level)
+        search_output = battle_out.battle_search_output(id_level, user_id)
 
         return Response(search_output, status=status.HTTP_200_OK)
 

@@ -2,31 +2,25 @@
 
 class BattleOutput:
 
-    def battle_search_output(self, id, level):
+    @staticmethod
+    def battle_search_output(id_level, user_id):
         """
-        :param id: <QuerySet [(1,), (2,), (3,), (4,), (5,)]>
-        :param level: <QuerySet [(1,), (1,), (1,), (1,), (1,)]>
+        given a queryset object like [(3, 3), (5, 7)]
+        where the first value of array is the id and the second the level
 
-        reformat the output to make it clearer, it will be:
-        [
-            {"id": 1,
-            "level": 1},
-
-            {"id": 2,
-            "level": 1}
-        ]
+        return a dict more clean like
+        [{'id': 3, 'level': 3},
+        {'id': 5, 'level': 7}]
         """
+        search_out = []
 
-        search_output = []
+        for i in id_level:
+            # to exclude the current user id and level
+            if i[0] == user_id:
+                pass
+            else:
+                temp = {'id': i[0], 'level': i[1]}
+                search_out.append(temp)
 
-        for i in id:
 
-            temp_ = {}
-            temp_['id'] = i[0]
-
-            for l in level:
-                temp_['level'] = l[0]
-
-            search_output.append(temp_)
-
-        return search_output
+        return search_out
