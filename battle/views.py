@@ -4,7 +4,7 @@ from rest_framework import status
 
 from django.contrib.auth.models import User
 
-from shop.models import UserTroop  # troop model (troop_id)
+from game.models import UserTroop  # troop model (troop_id)
 from game.models import GameAccount  # game model (level and credit)
 
 from battle.battle_utility.battle_output import BattleOutput
