@@ -34,7 +34,7 @@ class BattleSearchAPIView(APIView):
 
         # get the min and max level based on the user level (range -+5)
         battle_utility = BattleUtility()
-        min_level_range, max_level_range = battle_utility.filter_battle_search(user_id)
+        min_level_range, max_level_range = battle_utility.filter_battle_search(user_level)
 
         # get a list of user-id and level in a given range
         # <QuerySet [(1, 1), (3, 3), (4, 1), (5, 7)]>
@@ -93,29 +93,18 @@ class BattleFightAPIViews(APIView):
                         battle_algo = BattleAlgorithm(enemy_troops, user_troops, enemy_multiplier, user_multiplier)
                         result = battle_algo.get_battle_result()
 
-                        # update the number of win/lose given the battle result
-                        BattleFightAPIViews.update_win_lose(user_id, enemy_id, result)
-
-                        # check if the number of win is a multiple of 5,
-                        # if True update the level, else pass
-                        BattleFightAPIViews.update_level(user_id, enemy_id, result)
-
-                        # update winner level
                         if result['win']:
-                            win = GameAccount.objects.get(user=user_id)
-                            win = win.win
+                            winner = user_id
+                            loser = enemy_id
+                        else:
+                            winner = enemy_id
+                            loser = user_id
 
-                            # if the number of win is a multiple of 5 return True, else False
-                            bool_ = BattleUtility.check_number_of_win(win)
+                        # update the number of win/lose given the battle result
+                        BattleFightAPIViews.update_win_lose(winner, loser)
 
-                            if bool_:
-                                # update the level
-                                level = GameAccount.objects.get(user=user_id)
-                                update_level = level.level + 1
-                                level.level = update_level
-                                level.save()
-                            else:
-                                pass
+                        # check if the number of win is a multiple of 5
+                        BattleFightAPIViews.update_level(winner)
 
                         return Response(result, status=status.HTTP_200_OK)
 
@@ -136,14 +125,7 @@ class BattleFightAPIViews(APIView):
 
 
     @staticmethod
-    def update_win_lose(user_id, enemy_id, result):
-
-        if result['win']:
-            winner = user_id
-            loser = enemy_id
-        else:
-            winner = enemy_id
-            loser = user_id
+    def update_win_lose(winner, loser):
 
         # update the winner’s number of wins
         win = GameAccount.objects.get(user=winner)
@@ -159,12 +141,7 @@ class BattleFightAPIViews(APIView):
 
 
     @staticmethod
-    def update_level(user_id, enemy_id, result):
-
-        if result['win']:
-            winner = user_id
-        else:
-            winner = enemy_id
+    def update_level(winner):
 
         win = GameAccount.objects.get(user=winner)
         win = win.win
@@ -174,7 +151,7 @@ class BattleFightAPIViews(APIView):
 
         if bool_:
             # update the level
-            level = GameAccount.objects.get(user=user_id)
+            level = GameAccount.objects.get(user=winner)
             update_level = level.level + 1
             level.level = update_level
             level.save()
