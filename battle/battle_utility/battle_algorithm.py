@@ -74,3 +74,44 @@ class BattleAlgorithm:
 
         else:
             return {'win': False, 'rest_def': rest_enemy_def, 'total_def': enemy_def}
+
+
+    def get_lost_troops(self):
+        """ 
+        given battle result, return a fixed amount in percentage of troops that will be lost by the loser
+
+        :return int
+        """
+
+        # get winner's defense value at beginning and end of battle
+        initial_battle_def = self.get_battle_result(self)['total_def']
+        end_battle_def = self.get_battle_result(self)['rest_def']
+
+        # set const values for range percentage
+        HIGHT = 35
+        MEDIUM = 25
+        LOW = 15
+
+        # set const values for fixed percentage result
+        FLAWLESS = 40
+        CLEAR = 30
+        HARD_WON =  20
+        SUFFERED = 10 
+
+        # compute exact percentage of troops lost
+        perc = end_battle_def/initial_battle_def * 100
+
+        # convert exact percentage to our fixed values
+        if perc >= HIGHT:
+            victory = FLAWLESS
+
+        elif HIGHT > perc >= MEDIUM:
+            victory = CLEAR
+
+        elif MEDIUM > perc >= LOW:            victory = HARD_WON
+
+        else:
+            victory = SUFFERED
+
+        return victory
+
