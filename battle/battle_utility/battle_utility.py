@@ -32,3 +32,26 @@ class BattleUtility:
             # the number is not a multiple of 5
             return False
 
+    @staticmethod
+    def assign_credits_to_player(user_level):
+        """ 
+        set credit amounts based on level range
+        assign defined amount to player in base of its level
+
+        return :int number of credits
+        """
+
+        # set range level: every 5 levels 
+        range_level = user_level // 5 
+
+        # set initial credits' amount and perc bonus to assign
+        START_CREDITS = 300
+        BONUS_PERC = 30
+
+        # set amount of credits to add to start credits
+        bonus_credits = round(START_CREDITS * (BONUS_PERC / 100) * range_level) 
+
+        # compute credits' amount to assign to playes based on range level
+        assigned_credits = START_CREDITS + bonus_credits
+
+        return assigned_credits
