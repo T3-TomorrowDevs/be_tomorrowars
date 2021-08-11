@@ -8,6 +8,11 @@ from rest_framework.authtoken.models import Token
 
 
 class UserAccount(models.Model):
+    """
+    Create a table UserAccount to store the googleid related to userid and create the token
+    to send after the login/signup
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     google_id = models.CharField(max_length=100)
 

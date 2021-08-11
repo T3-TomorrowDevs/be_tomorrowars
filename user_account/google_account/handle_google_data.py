@@ -1,8 +1,18 @@
 import requests
 import json
 
-# the method get_userinfo uses the access token to get the user data at the endpoint "endpoint" using a get request.
-# the method returns a json response (a dict for python)
+# the method get_userinfo uses the access-token to get the user data at the endpoint "endpoint" using a get request.
+# the method returns a json response (a dict for python) with the follow keys:
+
+# json response:
+# {
+#   "id": "",
+#   "name": "",
+#   "given_name": "",
+#   "family_name": "",
+#   "picture": "",
+#   "locale": ""
+# }
 
 
 class GoogleData:
