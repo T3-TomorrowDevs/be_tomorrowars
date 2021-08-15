@@ -1,0 +1,1 @@
+web: gunicorn tomorrowars.wsgi --log-file -
