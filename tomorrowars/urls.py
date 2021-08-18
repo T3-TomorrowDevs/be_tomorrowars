@@ -28,7 +28,7 @@ urlpatterns = [
 
     path('battle-search/', BattleSearchAPIView.as_view(), name='battle-search'),  # search battle fight endpoint
     path('battle-fight/', BattleFightAPIViews.as_view(), name='battle-fight'),    # battle fight endpoint
-    path('testlogin/', LoginAPIView.as_view()),  # endpoint test google login
+    path('login/', LoginAPIView.as_view()),  # endpoint test google login
 
     path('shop/', ShopAPIView.as_view(), name='shop'),                   # to show all available troops to buy
     path('buy-troops/', UserTroopsAPIViews.as_view(), name='troops'),    # to buy troops for the user
