@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 import django_heroku
+from corsheaders.defaults import default_methods, default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 
     # our apps
     'user_account',
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,6 +147,20 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'https://tomorrowars.netlify.app/'
+]
+
+
+# set True if you want that all origins will be allowed
+CORS_ALLOW_ALL_ORIGINS = False
+
+
+CORS_ALLOW_METHODS = list(default_methods)
+
+
+CORS_ALLOW_HEADERS = list(default_headers)
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
