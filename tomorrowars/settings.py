@@ -149,7 +149,8 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'https://tomorrowars.netlify.app/'
+    'https://tomorrowars.netlify.app/',
+    "https://www.googleapis.com/oauth2/v2/userinfo"
 ]
 
 
