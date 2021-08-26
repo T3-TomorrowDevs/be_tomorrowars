@@ -165,3 +165,16 @@ CORS_ALLOW_HEADERS = list(default_headers)
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+# Heroku: Update database configuration from $DATABASE_URL.
+
+SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
