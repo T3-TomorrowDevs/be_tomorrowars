@@ -9,16 +9,16 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import dj_database_url
+
 import os
 from pathlib import Path
 import django_heroku
-import dj_database_url
 
 from corsheaders.defaults import default_methods, default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -29,8 +29,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'czkl$o8@l&x1hc7n!ds=%acjhc-p7$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['https://tomorrowars.herokuapp.com/']
 
 # Application definition
 
@@ -53,6 +52,8 @@ INSTALLED_APPS = [
     'battle',
     'game',
     'shop'
+
+    'whitenoise.runserver_nostatic'  # heroku
 ]
 
 SITE_ID = 1
@@ -66,6 +67,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware'  # heroku
 ]
 
 ROOT_URLCONF = 'tomorrowars.urls'
@@ -88,7 +91,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tomorrowars.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -98,7 +100,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -118,7 +119,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -131,7 +131,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -163,9 +162,7 @@ CSRF_TRUSTED_ORIGINS = [
 # set True if you want that all origins will be allowed
 CORS_ALLOW_ALL_ORIGINS = False
 
-
 CORS_ALLOW_METHODS = list(default_methods)
-
 
 CORS_ALLOW_HEADERS = list(default_headers)
 
@@ -181,6 +178,19 @@ SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+
+# heroku
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# location where django collect all static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# location where you will store your static files
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'project_name/static')
+                    ]
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'
