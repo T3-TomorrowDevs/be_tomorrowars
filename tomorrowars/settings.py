@@ -15,7 +15,6 @@ import django_heroku
 import dj_database_url
 
 from corsheaders.defaults import default_methods, default_headers
-from dj_database_url import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -156,6 +155,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.googleapis.com"
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://tomorrowars.netlify.app',
+    "https://www.googleapis.com"
+]
 
 # set True if you want that all origins will be allowed
 CORS_ALLOW_ALL_ORIGINS = False
